@@ -6,6 +6,6 @@ def tampil_panel(text, page):
         title=page,
         subtitle="Simulasi Disdukcapil",
         border_style="blue",
-        width=50
+        width=200
     )
     return panel

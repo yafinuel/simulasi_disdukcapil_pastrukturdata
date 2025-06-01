@@ -1,12 +1,14 @@
 from rich.console import Console
 from display_panel import tampil_panel
+from update import updateData
 
 console = Console()
 
 text = """
 1. Pendaftaran KTP
 2. Lihat KTP terdaftar
-3. Tutup
+3. Update Data
+4. Keluar
 """
 page = "Menu utama"
 
@@ -19,4 +21,6 @@ while running:
     elif menu == 2:
         pass
     elif menu == 3:
+        updateData()
+    elif menu == 4:
         break
