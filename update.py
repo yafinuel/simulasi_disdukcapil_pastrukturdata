@@ -1,30 +1,16 @@
 import os
+import json
 from prompt_toolkit import prompt
 from rich.console import Console
 from display_panel import tampil_panel
+from register import load_data, DATA_FILE
 
-datas = [
-{
-    "NIK" : 123456789,
-    "NAMA" : "Yafi Nuqman Elianto",
-    "TTL" : ['Bantul', '2000-01-01'],
-    "ALAMAT" : ["Sedayu", "Bantul", "Yogyakarta"],
-    "AGAMA" : "Islam",
-    "STATUS PERKAWINAN" : "Belum Kawin",
-    "PEKERJAAN" : "Pelajar/Mahasiswa",
-    "KEWARGANEGARAAN" : "WNI",
-    "BERLAKU HINGGA" : "Seumur hidup"
-},{
-    "NIK" : 234567891,
-    "NAMA" : "Manusia 2",
-    "TTL" : ['Sleman', '2000-01-02'],
-    "ALAMAT" : ["Godean", "Sleman", "Yogyakarta"],
-    "AGAMA" : "Islam",
-    "STATUS PERKAWINAN" : "Belum Kawin",
-    "PEKERJAAN" : "Pelajar/Mahasiswa",
-    "KEWARGANEGARAAN" : "WNI",
-    "BERLAKU HINGGA" : "Seumur hidup"
-}]
+
+def editJSON(datas):
+    with open(DATA_FILE, 'w') as file:
+        json.dump(datas, file, indent=4)
+
+
 
 
 def textPanel(dictionary):
@@ -48,12 +34,29 @@ def textPanel(dictionary):
 console = Console()
 page = "Edit data"
 
+def cariKTP(datas):
+    search = input("Masukkan NIK: ")
+    for data in datas:
+        if data['NIK'] == search:
+            ktp = data
+            break
+    return ktp
+
+def cariIndexKTP(data, datas):
+    n=0
+    for i in datas:
+        if data['NIK'] == i['NIK']:
+            datas[n] = data
+            return datas
+        n +=1
+
 
 def updateData():
+    datass = load_data()
     running = True
     while running:
+        data = cariKTP(datass)
         os.system('cls')
-        data = datas[1]
         console.print(tampil_panel(textPanel(data), page))
         option = input("Apa yang ingin Anda ubah? [ketik 'q' untuk keluar]\nKetik: ").upper()
         match option:
@@ -64,9 +67,12 @@ def updateData():
                 data["NAMA"] = prompt("Nama: ", default=data["NAMA"])
                 print("data berhasil diubah")
                 input("Enter untuk lanjutkan:")
-            case "TTL" | "TEMPAT, TANGGAL LAHIR" | "TEMPAT/ TANGGAL LAHIR":
-                data["TTL"][0] = prompt("Tempat kelahiran: ", default=data["TTL"][0])
-                data["TTL"][1] = prompt("Tanggal kelahiran: ", default=data["TTL"][1])
+            case "TEMPAT LAHIR":
+                data["TEMPAT LAHIR"] = prompt("Tempat kelahiran: ", default=data["TEMPAT LAHIR"])
+                print("data berhasil diubah")
+                input("Enter untuk lanjutkan:")
+            case 'TANGGAL LAHIR':
+                data["TANGGAL LAHIR"] = prompt("Tanggal kelahiran", default=data["TANGGAL LAHIR"])
                 print("data berhasil diubah")
                 input("Enter untuk lanjutkan:")
             case "ALAMAT":
@@ -108,8 +114,20 @@ def updateData():
                 data["BERLAKU HINGGA"] = prompt("Berlaku Hingga: ", default=data["BERLAKU HINGGA"])
                 print("data berhasil diubah")
                 input("Enter untuk lanjutkan:")
+            case "JENIS KELAMIN":
+                benar = True
+                while benar:
+                    kelamin = prompt("Jenis kelamin: ", default=data["JENIS KELAMIN"])
+                    if kelamin == "L" | kelamin == "P" :
+                        data["JENIS KELAMIN"] = kelamin
+                        benar = False
+                    else:
+                        print("masukkan L atau P")
+                print("data berhasil diubah")
+                input("Enter untuk lanjutkan:")
             case 'Q':
                 running = False
             case _:
                 input("Masukkan input dengan benar! [enter untuk lanjutkan]")
-
+        datasss = cariIndexKTP(data, datass)
+        editJSON(datasss)
